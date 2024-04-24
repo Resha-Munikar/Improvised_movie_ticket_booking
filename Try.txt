@@ -1,0 +1,7 @@
+dabang 100 100
+resha 2 300
+aakash 3 300
+resha 4 200
+resha 5 600
+resha 1 1
+kals 6 100
