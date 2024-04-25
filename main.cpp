@@ -77,13 +77,13 @@ void Movie::displayMenu()
 				showmovielist();
 				break;
 			case 3:
-				//selection.deletemovie();
+				deletemovie();
 				break;
 			case 4:
 				changepw();
 				break;
 			case 5:
-				obj.main_menu();
+				main_menu();
 				break;
 			case 6:
 				exit(0);
@@ -255,6 +255,86 @@ void Movie :: view()
 	system("cls");
 	displayuser_menu();
 }
+void Movie :: deletemovie()
+{
+	int found = 0, search =0;
+	char re_add;
+	ifstream fp;
+	ofstream fs;
+	system("cls");
+	ifstream my_file;
+	my_file.open("Try.txt", ios::in);
+	if (!my_file)
+	{
+		cout<<endl<<"\t\t\tError! File not found";
+		exit(0);
+	}
+	system("cls");
+	cout<<endl;
+	cout<<"\t\t__________________________List of ongoing movies details__________________________";
+	cout<<endl<<endl;
+	cout<<"\t\t"<<setw(55)<<left<<"Movie Name"<<setw(15)<<"Movie Code"<<setw(15)<<"Ticket Price"<<endl<<endl;
+	cout<<"\t\t_________________________________________________________________________________";
+	printf("\n");
+	while (my_file>>name>>code>>price)
+	{
+		cout<<"\t\t"<<setw(55)<<name<<setw(15)<<code<<setw(15)<<price;
+		cout<<endl;
+		cout<<"\t\t_________________________________________________________________________________";
+		cout<<endl;
+	}
+	my_file.close();
+del_movie:
+	cout<<endl;
+	cout<<endl<<"\t\t\tEnter the code of movie you want to delete : ";
+	cin>>search;
+	fp.open("Try.txt", ios::in);
+	if (!fp)
+	{
+		cout<<endl<<"\t\t\tFile not found.";
+		exit(0);
+	}
+	fs.open("Temp.txt", ios::out);
+	if (!fs)
+	{
+		cout<<endl<<"\t\t\tFile not found.";
+		exit(0);
+	}
+	while (fp>>name>>code>>price)
+	{
+		if (code != search)
+		{
+			fs<< name <<" "<< code <<" "<< price <<endl;
+		}
+		else
+		{
+			found = 1;
+		}
+	}
+	fp.close();
+	fs.close();
+	remove("Try.txt");
+	rename("temp.txt", "Try.txt");
+	if (found == 1)
+	{
+		cout<<endl<<"\t\t\tMovie with code"<<" "<<search<<" is deleted successfully.";
+	}
+	else
+	{
+		cout<<endl<<"\t\t\tMovie with code"<<" "<<search<<"not found.";
+	}
+	found=0;
+	sleep(1);
+	cout<<endl<<"\t\t\tDo you want to delete another movie?[Y/N] : ";
+	cin>>re_add;
+	re_add=tolower(re_add);
+	if (re_add=='y')
+	{
+		goto del_movie;
+	}
+	system("cls");
+	displayMenu();
+}
 //login menu showing function
 void Password::login_menu()
 {
@@ -374,7 +454,7 @@ void Password :: forgot()
 				cout<<endl<<"\t\t\tAccount Found...";
 				cout<<endl<<"\t\t\t Your password is: "<<password;
 				cout<<endl<<endl<<"\t\t\t\tPlease wait....";
-				sleep(3);
+				sleep(2);
 				login_details();
 			}
 			else
