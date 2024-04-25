@@ -3,6 +3,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<unistd.h>
+#include<iomanip>
 using namespace std;
 //password verification part
 class Password{
@@ -28,6 +29,7 @@ class Movie : public Password{
 		void addmovie();
 		void deletemovie();
 		void showmovielist();
+		void view();
 }Movie1;
 int code_exists( int code)
 {
@@ -50,7 +52,7 @@ int code_exists( int code)
 //main function definition
 void Movie::displayMenu()
 {
-	//object of vehicle class 
+	//object of movie class 
 	Movie selection;
 	int option;
 	char ch;
@@ -64,15 +66,15 @@ void Movie::displayMenu()
 		cout<<endl<<"\t\t\t\t4. Change password ";
 		cout<<endl<<"\t\t\t\t5. Go back to main menu ";
 		cout<<endl<<"\t\t\t\t6. Exit ";
-		cout<<endl<<"\n\n\t\t\t\t   Enter your choice:  ";
+		cout<<endl<<"\n\n\t\t\t   Enter your choice:  ";
 		cin>>option;
 		switch(option)
 		{
 			case 1:
-				Movie1.addmovie();
+				addmovie();
 				break;
 			case 2:
-				//selection.showmovielist();
+				showmovielist();
 				break;
 			case 3:
 				//selection.deletemovie();
@@ -128,7 +130,6 @@ re_code:
 	cout<<endl<<"\t\t\tEnter movie ticket price: ";
 	cin>>price;
 	cout<<endl;
-	//fs.seekg(0, ios::end);
 	fs<< name <<" "<< code <<" "<< price <<endl;
 	if(fs.fail())
 	{
@@ -136,11 +137,6 @@ re_code:
 		exit(1);
 	}
 	fs.close();
-/*	if(!fs.is_open())
-	{
-		cout<<endl<<"\t\t\tError closing the file.";
-		exit(1);
-	}*/
 	cout<<"\t\t\tMovie added successfully.";
 	sleep(1);
 	cout<<endl;
@@ -151,7 +147,6 @@ re_code:
 	{
 		goto re_movie;
 	}
-	sleep(1);
 	system("cls");
 	displayMenu();
 }
@@ -160,7 +155,7 @@ void Movie::displayuser_menu()
 	char ch,c;
 	label:
 		system("cls");
-		cout<<endl<<"\t\t\t\t\t______________USER OPTIONS______________";
+		cout<<endl<<"\t\t\t\t__________________USER OPTIONS__________________";
 		cout<<endl;
 		cout<<endl<<"\t\t\t\tPress A. to View Movie List";
 		cout<<endl<<"\t\t\t\tPress B. to Book Ticket";
@@ -170,12 +165,11 @@ void Movie::displayuser_menu()
 		fflush(stdin);
 		cout<<endl<<endl<<"\t\t\tEnter your choice : ";
 		cin>>ch;
-		c=toupper(ch);
+		ch=toupper(ch);
 		switch (ch)
 		{
 		case 'A':
-			//view();
-			//goto label;
+			view();
 			break;
 		case 'B':
 			break;
@@ -203,6 +197,64 @@ void Movie::displayuser_menu()
 			}
 		}
 }
+void Movie :: showmovielist()
+{
+	ifstream my_file;
+	my_file.open("Try.txt", ios::in);
+	if (!my_file)
+	{
+		cout<<endl<<"\t\t\tError! File not found";
+		exit(0);
+	}
+	system("cls");
+	cout<<endl;
+	cout<<"\t\t__________________________List of ongoing movies details__________________________";
+	cout<<endl<<endl;
+	cout<<"\t\t"<<setw(55)<<left<<"Movie Name"<<setw(15)<<"Movie Code"<<setw(15)<<"Ticket Price"<<endl<<endl;
+	cout<<"\t\t_________________________________________________________________________________";
+	printf("\n");
+	while (my_file>>name>>code>>price)
+	{
+		cout<<"\t\t"<<setw(55)<<name<<setw(15)<<code<<setw(15)<<price;
+		cout<<endl;
+		cout<<"\t\t_________________________________________________________________________________";
+		cout<<endl;
+	}
+	my_file.close();
+	cin.ignore();
+	getchar();
+	system("cls");
+	displayMenu();
+}
+void Movie :: view()
+{
+	ifstream my_file;
+	my_file.open("Try.txt", ios::in);
+	if (!my_file)
+	{
+		cout<<endl<<"\t\t\tError! File not found";
+		exit(0);
+	}
+	system("cls");
+	cout<<endl;
+	cout<<"\t\t__________________________List of ongoing movies details__________________________";
+	cout<<endl<<endl;
+	cout<<"\t\t"<<setw(55)<<left<<"Movie Name"<<setw(15)<<"Movie Code"<<setw(15)<<"Ticket Price"<<endl<<endl;
+	cout<<"\t\t_________________________________________________________________________________";
+	printf("\n");
+	while (my_file>>name>>code>>price)
+	{
+		cout<<"\t\t"<<setw(55)<<name<<setw(15)<<code<<setw(15)<<price;
+		cout<<endl;
+		cout<<"\t\t_________________________________________________________________________________";
+		cout<<endl;
+	}
+	my_file.close();
+	cin.ignore();
+	getchar();
+	system("cls");
+	displayuser_menu();
+}
 //login menu showing function
 void Password::login_menu()
 {
@@ -217,7 +269,7 @@ void Password::login_menu()
 	cout<<endl<<"\t\t\t\t1. Login";
 	cout<<endl<<"\t\t\t\t2. Forgot Password";
 	cout<<endl<<"\t\t\t\t3. Exit";
-	cout<<endl<<endl<<"\t\t\tEnter your choice: ";
+	cout<<endl<<endl<<"\t\t\t  Enter your choice: ";
 	cin>>choice;
 	switch(choice)
 	{
@@ -356,7 +408,7 @@ void Password:: main_menu()
 		cout<<endl<<"\t\t\t\t1. Admin";
 		cout<<endl<<"\t\t\t\t2. User";
 		cout<<endl<<"\t\t\t\t3. Exit";
-		cout<<endl<<endl<<"\t\t\t\tEnter your choice:";
+		cout<<endl<<endl<<"\t\t\t  Enter your choice:";
 		cin>>select;
 		switch(select)
 		{
