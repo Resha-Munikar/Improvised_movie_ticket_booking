@@ -4,6 +4,8 @@
 #include<string.h>
 #include<unistd.h>
 #include<iomanip>
+#include<cstdlib>
+#include<sstream>
 using namespace std;
 //password verification part
 class Password{
@@ -33,6 +35,22 @@ class Movie : public Password{
 		void view();
 		void book();
 }Movie1;
+class Oldrecord : public Movie
+{
+	public:
+		char person_name[50];
+		long long int mobile_number;
+		int seat_reserved;
+		int total_ticketprice;
+		char movie_name[50];
+		int price_per;
+}test;
+std::string intTostring(int num)
+{
+	std::stringstream ss;
+	ss<<num;
+	return ss.str();
+}
 int code_exists( int code)
 {
 	int code_found = 0;
@@ -180,6 +198,7 @@ void Movie::displayuser_menu()
 			view();
 			break;
 		case 'B':
+			book();
 			break;
 		case 'C':
 			break;
@@ -343,12 +362,14 @@ del_movie:
 	system("cls");
 	displayMenu();
 }
-/*void book()
+void Movie :: book()
 {
 	int movie_code; 
+	string name,genre;
+	int code,price,length;
 	ifstream fs,fp;
 	ofstream ufp;
-	fs.open("Try.txt", ios::in)
+	fs.open("Try.txt", ios::in);
 	if (!fs)
 	{
 		cout<<endl<<"\t\t\tError! File not found";
@@ -358,72 +379,97 @@ del_movie:
 	cout<<endl;
 	cout<<"\t\t_________________________________List of ongoing movies details__________________________________";
 	cout<<endl<<endl;
-	cout<<"\t\t"<<setw(55)<<left<<"Movie Name"<<setw(15)<<"Movie Code"<<setw(15)<<"Ticket Price"<<endl<<endl;
+	cout<<"\t\t"<<setw(55)<<left<<"Movie Name"<<setw(15)<<"Movie Genre"<<setw(15)<<"Movie Code"<<setw(15)<<"Ticket Price"<<endl<<endl;
 	cout<<"\t\t_________________________________________________________________________________________________";
 	printf("\n");
-	while (fs>>name>>code>>price)
+	while (fs>>name>>genre>>code>>price)
 	{
-		cout<<"\t\t"<<setw(55)<<name<<setw(15)<<code<<setw(15)<<price;
+		cout<<"\t\t"<<setw(55)<<name<<setw(15)<<genre<<setw(15)<<code<<setw(15)<<price;
 		cout<<endl;
 		cout<<"\t\t_________________________________________________________________________________________________";
 		cout<<endl;
 	}
-	my_file.close();
+	fs.close();
 	cout<<endl<<endl<<"\t\t\t Enter movie code you want to book ticket for :";
 	cin>>movie_code;
 	fp.open("Try.txt",ios::in);
 	if(!fp)
 	{
-		cout<<endl<<"\t\t\tError! File does not found !";
+		cout<<endl<<"\t\t\tError! File not found !";
 		exit(0);
 	}
 	else
-	{	while (fp>>name>>code>>price)
+	{	
+		Oldrecord test; //instance of oldrecord
+		bool movie_found=false;
+		while (fp>>name>>genre>>code>>price)
 		{
 			if(code==movie_code)
 			{	
-				cout<<endl<<"\t\t\t Record Found";
+				movie_found=true;
+				cout<<endl<<"\t\t\tRecord Found";
+				cout<<endl;
 				cout<<endl<<"\t\t\tCode :"<<code;
 				cout<<endl<<"\t\t\tMovie name :"<<name;
 				cout<<endl<<"\t\t\tMovie genre :"<<genre;
 				cout<<endl<<"\t\t\tPrice of ticket :"<<price;
+				cout<<endl;
+				cout<<endl<<endl<<"\t\t\t\t* _________________Fill Your Details_______________  *";
+				cout<<endl;
+				fflush(stdin);
+				cout<<endl<<"\t\t\t Name :";
+				cin>>test.person_name;
+				fflush(stdin);
+			again:
+				cout<<endl<<"\t\t\t Mobile number :";
+				cin>>test.mobile_number;
+				string mobile_str=intTostring(test.mobile_number);
+				length=mobile_str.length();
+				if(length>10||length<10)
+				{
+					cout<<endl<<"\t\t\t  Invalid number. Please enter the correct number.";
+					cout<<endl;
+					goto again;
+				}
+			ticketrewind:
+				cout<<endl<<"\t\t\t Total number of tickets :";
+				cin>>test.seat_reserved;
+				if(test.seat_reserved>10)
+				{
+					cout<<endl<<"\t\t\tSorry! You can't reserve above 10 tickets at once. Try again.";
+					goto ticketrewind;
+				}
+				test.total_ticketprice = price * test.seat_reserved;
+				cout<<endl<<"\t\t\tYour total expense for "<<test.seat_reserved<<" ticket is "<<test.total_ticketprice;
+				strcpy(test.movie_name,name.c_str()); //converting string to const char*
+				test.price_per=price;
+				ufp.open("oldTransaction.txt",ios::app);
+				if(!ufp)
+				{
+					cout<<endl<<"\t\t\tFile not found.";
+				}
+				ufp<<test.person_name<<" "<<test.mobile_number<<" "<<test.seat_reserved<<" "<<test.total_ticketprice<<" "<<test.movie_name<<" "<<test.price_per<<endl;
+				ufp.close();
+				cout<<endl<<endl;
+				cout<<endl<<"\t\t\t ***YOUR SEATS ARE RESERVED! ENJOY YOUR MOVIE!!*** ";
+				cout<<endl<<"\t\t\t\tRecord inserted sucessfully.";
+				cout<<endl;
 			}
+		}
+		if(!movie_found)
+		{
+			cout<<endl<<"\t\t\t Movie with code "<<movie_code<<" not found.";
+			fflush(stdin);
+			getchar();
+			displayuser_menu();
 		}
 	}
 	fp.close();
-	ufp=fopen("oldTransaction.txt","r+");
-	if(ufp == NULL)
-	{
-		printf("FIle not Found");
-	}
-	printf("\n\n\t\t\t\t* _________________Fill Your Details_______________  *\n");
-	fflush(stdin);
-	printf("\n\t\t Name :");
-	gets(test.person_name);
-	fflush(stdin);
-	printf("\n\t\t Mobile number :");
-	scanf("%lld",&test.mobile_number);
-ticketrewind:
-	printf("\n\t\t Total number of tickets :");
-	scanf("%d",&test.seat_reserved);
-	if(test.seat_reserved>10)
-	{
-		printf("\n\t->Sorry! You can't reserve above 10tickets at once. Try again.");
-		goto ticketrewind;
-	}
-	test.total_ticketprice = addlist.price * test.seat_reserved;
-	printf("\n\t\tYour total expense for %d ticket is %d.",test.seat_reserved,test.total_ticketprice);
-	strcpy(test.movie_name,addlist.name);
-	test.price_per=addlist.price;
-	fseek(fs, 0, SEEK_END);
-	fwrite(&test, sizeof(struct oldrecord), 1, ufp);
-	printf("\n\t\t ***YOUR SEATS ARE RESERVED! ENJOY YOUR MOVIE!!*** \n");
-	fclose(ufp);
-	printf("\n\t\t\tRecord inserted sucessfully.");
-	printf("\n");
+	cout<<endl;
 	fflush(stdin);
 	getchar();
-}*/
+	displayuser_menu();
+}
 //login menu showing function
 void Password::login_menu()
 {
