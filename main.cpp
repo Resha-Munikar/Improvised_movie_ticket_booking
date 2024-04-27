@@ -34,6 +34,7 @@ class Movie : public Password{
 		void reserved();
 		void view();
 		void book();
+		void cancel();
 }Movie1;
 class Oldrecord : public Movie
 {
@@ -201,6 +202,7 @@ void Movie::displayuser_menu()
 			book();
 			break;
 		case 'C':
+			cancel();
 			break;
 		case'D':
 			system("cls");
@@ -468,6 +470,61 @@ void Movie :: book()
 	cout<<endl;
 	fflush(stdin);
 	getchar();
+	displayuser_menu();
+}
+void Movie :: cancel()
+{
+	system("cls");
+	cout<<endl<<"\t\t\t________________________TICKET CANCELLATION________________________";
+	int found=0;
+	long long int cancel_code;
+	ifstream fp;
+	ofstream fs;
+	fp.open("oldTransaction.txt",ios::in);
+	if(!fp)
+	{
+		cout<<endl<<"\t\t\t File not found !";
+		exit(0);
+	}
+	fs.open("Backup.txt", ios::out);
+	if (!fs)
+	{
+		cout<<endl<<"\t\t\tFile not found.";
+		exit(0);
+	}
+	cout<<endl<<endl<<endl<<"\t\t\tEnter your phone number: ";
+	cin>>cancel_code;
+	Oldrecord test;
+	while (fp>>test.person_name>>test.mobile_number>>test.seat_reserved>>test.total_ticketprice>>test.movie_name>>test.price_per)
+	{
+		if (test.mobile_number != cancel_code)
+		{
+			fs<<test.person_name<<" "<<test.mobile_number<<" "<<test.seat_reserved<<" "<<test.total_ticketprice<<" "<<test.movie_name<<" "<<test.price_per<<endl;
+		}
+		else
+		{
+			found = 1;
+		}
+	}
+	fp.close();
+	fs.close();
+	remove("oldTransaction.txt");
+	rename("Backup.txt", "oldTransaction.txt");
+	if (found == 1)
+	{
+		cout<<endl<<"\t\t\t Movie reservation has been cancelled successfully.";
+	}
+	else
+	{
+		cout<<endl<<"\t\t\t Movie reservation not found.";
+		fflush(stdin);
+		getchar();
+		displayuser_menu();
+	}
+	found=0;
+	fflush(stdin);
+	getchar();
+	system("cls");
 	displayuser_menu();
 }
 //login menu showing function
