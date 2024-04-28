@@ -666,52 +666,59 @@ void Password::login_details()
 void Password :: forgot()
 {
 	again:
+		string codeRetrieved,codeGiven;
 		system("cls");
 		cout<<endl<<"\t\t\t*****************************************************************";
 		cout<<endl<<"\t\t\t\t\tMOVIE TICKET BOOKING SYSTEM";
 		cout<<endl<<"\t\t\t*****************************************************************";
-		fstream file1;
-		ifstream file2;
-		cin.ignore();
-		cout<<endl<<"\t\t\tEnter your username: ";
-		getline(cin,un);
-		file1.open("logindata.txt",ios::in);
-		if(!file1)
+		cout<<endl;
+		ifstream verify;
+		ofstream file3;
+		verify.open("securitykey.txt",ios::in);
+		if(!verify)
 		{
 			cout<<endl<<"\t\t\tNo such file.";
 		}
-		while(file1>>username>>password)
-		{	
-			if(username==un)
+		verify>>codeRetrieved;
+		cout<<endl<<"\t\t\t Enter the security key: ";
+		cin>>codeGiven;
+		if(codeRetrieved==codeGiven)
+		{
+			file3.open("logindata.txt",ios::out);
+			if(!file3)
 			{
-				cout<<endl<<"\t\t\tAccount Found...";
-				/*file2.open("securitykey.txt",ios::in);
-				if(!file2)
-				{
-					
-				}*/
-				cout<<endl<<"\t\t\t Your password is: "<<password;
-				cout<<endl<<endl<<"\t\t\t\tPlease wait....";
-				sleep(2);
-				login_details();
+				cout<<endl<<"\t\t\t File not found.";
+			}
+			cin.ignore();
+			cout<<endl<<"\t\t\t Enter your username: ";
+			cin>>username;
+			cin.ignore();
+			cout<<endl<<"\t\t\t Enter new password: ";
+			cin>>newpw;
+			file3<<username<<" "<<newpw;
+			cout<<endl<<"\t\t\t Password changed successfully.";
+			verify.close();
+			file3.close();
+			fflush(stdin);
+			cout<<endl<<endl<<"\t\t\t Press any key to continue.";
+			getchar();
+			login_details();
+		}
+		else
+		{
+			cout<<endl<<"\t\t\t Invalid security key.";
+			cout<<endl<<endl<<"\t\t\t Do you want to try again?";
+			cout<<endl<<"\t\t\t Press 'Y' to continue or 'N' to exit : ";
+			cin>>ch;
+			ch=tolower(ch);
+			if(ch=='y')
+			{
+				goto again;
 			}
 			else
 			{
-				cout<<endl<<"\t\t\tAccount not found.";
-				cout<<endl<<endl<<"\t\t\tDo you want to try again?";
-				cout<<endl<<"\t\t\tPress 'Y' to continue or 'N' to exit : ";
-				cin>>ch;
-				ch=tolower(ch);
-				if(ch=='y')
-				{
-					goto again;
-				}
-				else
-				{
-					obj.main_menu();
-				}
+				obj.main_menu();
 			}
-			file1.close();
 		}
 }
 void Password:: main_menu()
@@ -780,7 +787,11 @@ void Password::changepw()
 		{
 			if(password==pw)
 			{
-				cout<<endl<<"\t\t\tEnter new password: ";
+				cin.ignore();
+				cout<<endl<<"\t\t\t Enter your username: ";
+				cin>>un;
+				cin.ignore();
+				cout<<endl<<"\t\t\t Enter new password: ";
 				cin>>newpw;
 				file3.open("logindata.txt",ios::out);
 				if(!file3)
@@ -789,8 +800,8 @@ void Password::changepw()
 				}
 				file3<<un<<" "<<newpw;
 				cout<<endl<<"\t\t\tPassword changed successfully."<<endl;
-				cout<<endl<<endl<<"\t\t\t\tPlease wait....";
-				sleep(2);
+				fflush(stdin);
+				cout<<endl<<"\t\t\t Press any key to continue.";
 				file3.close();
 				login_details();
 			}
