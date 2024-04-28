@@ -102,6 +102,7 @@ void Movie::displayMenu()
 				deletemovie();
 				break;
 			case 4:
+				reserved();
 				break;
 			case 5:
 				changepw();
@@ -527,6 +528,37 @@ void Movie :: cancel()
 	system("cls");
 	displayuser_menu();
 }
+void Movie :: reserved()
+{
+	ifstream fp;
+	fp.open("oldTransaction.txt",ios::in);
+	if(!fp)
+	{
+		cout<<endl<<"\t\t\t File does not found !";
+		exit(0);
+	}
+	system("cls");
+	cout<<endl;
+	cout<<endl<<"\t\t\t\t___________________List of reserved movies details___________________";
+	cout<<endl<<endl<<endl;
+	cout<<"\t\t"<<setw(25)<<left<<"Customer Name"<<setw(20)<<"Phone Number"<<setw(20)<<"Seats Reserved"<<setw(20)<<"Total Price"<<setw(20)<<"Movie Name"<<setw(25)<<"Price per Ticket"<<endl;
+	cout<<endl;
+	cout<<"\t\t____________________________________________________________________________________________________________________________________";
+	cout<<endl;
+	Oldrecord record;
+	while (fp>>record.person_name>>record.mobile_number>>record.seat_reserved>>record.total_ticketprice>>record.movie_name>>record.price_per)
+	{
+		cout<<"\t\t"<<setw(25)<<record.person_name<<setw(20)<<record.mobile_number<<setw(20)<<record.seat_reserved<<setw(20)<<record.total_ticketprice<<setw(20)<<record.movie_name<<setw(25)<<record.price_per;
+		cout<<endl;
+		cout<<"\t\t____________________________________________________________________________________________________________________________________";
+		cout<<endl;
+	}
+	fp.close();
+	fflush(stdin);
+	getchar();
+	system("cls");
+	displayMenu();
+}
 //login menu showing function
 void Password::login_menu()
 {
@@ -631,6 +663,7 @@ void Password :: forgot()
 		cout<<endl<<"\t\t\t\t\tMOVIE TICKET BOOKING SYSTEM";
 		cout<<endl<<"\t\t\t*****************************************************************";
 		fstream file1;
+		ifstream file2;
 		cin.ignore();
 		cout<<endl<<"\t\t\tEnter your username: ";
 		getline(cin,un);
@@ -644,6 +677,11 @@ void Password :: forgot()
 			if(username==un)
 			{
 				cout<<endl<<"\t\t\tAccount Found...";
+				/*file2.open("securitykey.txt",ios::in);
+				if(!file2)
+				{
+					
+				}*/
 				cout<<endl<<"\t\t\t Your password is: "<<password;
 				cout<<endl<<endl<<"\t\t\t\tPlease wait....";
 				sleep(2);
