@@ -81,7 +81,8 @@ void Movie::displayMenu()
 		system("cls"); //clears console
 		//main menu 
 		cout<<endl<<endl<<"\t\t\t-------------------------------MENU-----------------------------"<<endl;
-		cout<<endl<<"\t\t\t\t1. Add movie list";
+		cout<<endl;
+		cout<<endl<<"\t\t\t\t1. Add movie ";
 		cout<<endl<<"\t\t\t\t2. Show movie list ";
 		cout<<endl<<"\t\t\t\t3. Delete movie ";
 		cout<<endl<<"\t\t\t\t4. View reserved movie list ";
@@ -151,8 +152,7 @@ re_code:
 	cin>>code;
 	if (code_exists(code))
 	{
-		cout<<endl<<"\t\t\tThe movie with code"<<" "<<code<<" "<<"already exists. Try another code.";
-		sleep(2);
+		cout<<endl<<"\t\t\tThe movie with code"<<" "<<code<<" "<<"already exists. Try another code."<<endl;
 		goto re_code;
 	}
 	cout<<endl<<"\t\t\tEnter movie ticket price: ";
@@ -166,8 +166,7 @@ re_code:
 	}
 	fs.close();
 	cout<<"\t\t\tMovie added successfully.";
-	sleep(1);
-	cout<<endl;
+	cout<<endl<<endl;
 	cout<<"\t\t\tDo you want to add another movie?[Y/N] : ";
 	cin>>re_add;
 	re_add=tolower(re_add);
@@ -251,7 +250,8 @@ void Movie :: showmovielist()
 		cout<<endl;
 	}
 	my_file.close();
-	cin.ignore();
+	fflush(stdin);
+	cout<<endl<<endl<<"\t\t\t Press any key to continue.";
 	getchar();
 	system("cls");
 	displayMenu();
@@ -280,7 +280,8 @@ void Movie :: view()
 		cout<<endl;
 	}
 	my_file.close();
-	cin.ignore();
+	fflush(stdin);
+	cout<<endl<<endl<<"\t\t\t Press any key to continue.";
 	getchar();
 	system("cls");
 	displayuser_menu();
@@ -354,7 +355,7 @@ del_movie:
 		cout<<endl<<"\t\t\tMovie with code"<<" "<<search<<" not found.";
 	}
 	found=0;
-	sleep(1);
+	cout<<endl;
 	cout<<endl<<"\t\t\tDo you want to delete another movie?[Y/N] : ";
 	cin>>re_add;
 	re_add=tolower(re_add);
@@ -451,7 +452,7 @@ void Movie :: book()
 				{
 					cout<<endl<<"\t\t\tFile not found.";
 				}
-				ufp<<test.person_name<<" "<<test.mobile_number<<" "<<test.seat_reserved<<" "<<test.total_ticketprice<<" "<<test.movie_name<<" "<<test.price_per<<endl;
+				ufp<<test.person_name<<" "<<test.mobile_number<<" "<<test.movie_name<<" "<<test.price_per<<" "<<test.seat_reserved<<" "<<test.total_ticketprice<<endl;
 				ufp.close();
 				cout<<endl<<endl;
 				cout<<endl<<"\t\t\t ***YOUR SEATS ARE RESERVED! ENJOY YOUR MOVIE!!*** ";
@@ -463,13 +464,16 @@ void Movie :: book()
 		{
 			cout<<endl<<"\t\t\t Movie with code "<<movie_code<<" not found.";
 			fflush(stdin);
+			cout<<endl;
+			cout<<endl<<"\t\t\t Press any key to continue.";
+			getchar();
 			getchar();
 			displayuser_menu();
 		}
 	}
 	fp.close();
-	cout<<endl;
 	fflush(stdin);
+	cout<<endl<<"\t\t\t Press any key to continue.";
 	getchar();
 	displayuser_menu();
 }
@@ -496,11 +500,11 @@ void Movie :: cancel()
 	cout<<endl<<endl<<endl<<"\t\t\tEnter your phone number: ";
 	cin>>cancel_code;
 	Oldrecord test;
-	while (fp>>test.person_name>>test.mobile_number>>test.seat_reserved>>test.total_ticketprice>>test.movie_name>>test.price_per)
+	while (fp>>test.person_name>>test.mobile_number>>test.movie_name>>test.price_per>>test.seat_reserved>>test.total_ticketprice)
 	{
 		if (test.mobile_number != cancel_code)
 		{
-			fs<<test.person_name<<" "<<test.mobile_number<<" "<<test.seat_reserved<<" "<<test.total_ticketprice<<" "<<test.movie_name<<" "<<test.price_per<<endl;
+			fs<<test.person_name<<" "<<test.mobile_number<<" "<<test.movie_name<<" "<<test.price_per<<" "<<test.seat_reserved<<" "<<test.total_ticketprice<<endl;
 		}
 		else
 		{
@@ -524,6 +528,7 @@ void Movie :: cancel()
 	}
 	found=0;
 	fflush(stdin);
+	cout<<endl<<endl<<"\t\t\t Press any key to continue.";
 	getchar();
 	system("cls");
 	displayuser_menu();
@@ -539,22 +544,23 @@ void Movie :: reserved()
 	}
 	system("cls");
 	cout<<endl;
-	cout<<endl<<"\t\t\t\t___________________List of reserved movies details___________________";
+	cout<<endl<<"\t\t\t\t___________________________List of reserved movies details___________________________";
 	cout<<endl<<endl<<endl;
-	cout<<"\t\t"<<setw(25)<<left<<"Customer Name"<<setw(20)<<"Phone Number"<<setw(20)<<"Seats Reserved"<<setw(20)<<"Total Price"<<setw(20)<<"Movie Name"<<setw(25)<<"Price per Ticket"<<endl;
+	cout<<"\t\t"<<setw(25)<<left<<"Customer Name"<<setw(20)<<"Phone Number"<<setw(30)<<"Movie Name"<<setw(20)<<"Price per Ticket"<<setw(20)<<"Seats Reserved"<<setw(20)<<"Total Price"<<endl;
 	cout<<endl;
 	cout<<"\t\t____________________________________________________________________________________________________________________________________";
 	cout<<endl;
 	Oldrecord record;
-	while (fp>>record.person_name>>record.mobile_number>>record.seat_reserved>>record.total_ticketprice>>record.movie_name>>record.price_per)
+	while (fp>>record.person_name>>record.mobile_number>>record.movie_name>>record.price_per>>record.seat_reserved>>record.total_ticketprice)
 	{
-		cout<<"\t\t"<<setw(25)<<record.person_name<<setw(20)<<record.mobile_number<<setw(20)<<record.seat_reserved<<setw(20)<<record.total_ticketprice<<setw(20)<<record.movie_name<<setw(25)<<record.price_per;
+		cout<<"\t\t"<<setw(25)<<record.person_name<<setw(20)<<record.mobile_number<<setw(30)<<record.movie_name<<setw(20)<<record.price_per<<setw(20)<<record.seat_reserved<<setw(20)<<record.total_ticketprice;
 		cout<<endl;
 		cout<<"\t\t____________________________________________________________________________________________________________________________________";
 		cout<<endl;
 	}
 	fp.close();
 	fflush(stdin);
+	cout<<endl<<endl<<"\t\t\t Press any key to continue.";
 	getchar();
 	system("cls");
 	displayMenu();
@@ -569,6 +575,7 @@ void Password::login_menu()
 	cout<<endl<<"\t\t\t*****************************************************************";
 	cout<<endl<<"\t\t\t\t\tMOVIE TICKET BOOKING SYSTEM";
 	cout<<endl<<"\t\t\t*****************************************************************";
+	cout<<endl;
 	//cout<<endl<<endl<<"\t\t\t-------------------------------MENU-----------------------------"<<endl;
 	cout<<endl<<"\t\t\t\t1. Login";
 	cout<<endl<<"\t\t\t\t2. Forgot Password";
@@ -609,6 +616,7 @@ void Password::login_details()
 	system("cls");
 	fstream login_file;
 	cout<<endl<<"\t\t************WELCOME TO LOGIN PAGE************"<<endl;
+	cout<<endl;
 	fflush(stdin);
 	cout<<endl<<"\t\t\tEnter your username: ";
 	getline(cin,un);
@@ -624,7 +632,7 @@ void Password::login_details()
 	{
 		if(username==un && password==pw)
 		{
-			cout<<endl<<"\t\t\t\tLogging in......";
+			cout<<endl<<endl<<"\t\t\t    Logging in......";
 			sleep(3);
 			system("cls");
 			Movie1.displayMenu();
@@ -633,7 +641,7 @@ void Password::login_details()
 		{
 			cout<<endl<<"\t\t\tInvalid Username or Password! ";
 			fflush(stdin);
-			cout<<endl<<"\t\t\tDo you want to try again (Y/N)? ";
+			cout<<endl<<endl<<"\t\t\tDo you want to try again (Y/N)? ";
 			cin>>ch;
 			ch=tolower(ch);
 			if(ch=='y')
@@ -715,6 +723,7 @@ void Password:: main_menu()
 		cout<<endl<<"\t\t\t*****************************************************************";
 		cout<<endl<<"\t\t\t\t\tMOVIE TICKET BOOKING SYSTEM";
 		cout<<endl<<"\t\t\t*****************************************************************";
+		cout<<endl;
 		cout<<endl<<"\t\t\t\t1. Admin";
 		cout<<endl<<"\t\t\t\t2. User";
 		cout<<endl<<"\t\t\t\t3. Exit";

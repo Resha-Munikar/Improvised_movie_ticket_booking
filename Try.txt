@@ -2,3 +2,5 @@ resha comedy 1 200
 aakash romantic 2 100
 siuuuuu comedy 7 500
 entertainment comedy 44 200
+bhootnath horror 5 200
+daaru thriller 35 250
