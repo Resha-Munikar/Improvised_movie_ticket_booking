@@ -1,6 +1,6 @@
-resha comedy 1 200
-aakash romantic 2 100
-siuuuuu comedy 7 500
-entertainment comedy 44 200
-bhootnath horror 5 200
-daaru thriller 35 250
+Dhamaal, Comedy 1 250
+Conjouring, Horror 2 200
+Pushpa, Action 3 150
+Go Goa Gone, Comedy 4 200
+Kabbadi, Comedy 5 200
+Friend Request, Horror 6 250

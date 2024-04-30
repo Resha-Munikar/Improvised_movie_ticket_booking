@@ -6,15 +6,15 @@
 #include<iomanip>
 #include<cstdlib>
 #include<sstream>
+#include<string>
 using namespace std;
 //password verification part
 class Password{
-		protected:
+		public:
 			string username,password;
 			string newpw;
 			string un,pw;
 			char ch;
-		public:
 			void main_menu();
 			void login_menu();
 			void forgot();
@@ -25,7 +25,8 @@ class Password{
 class Movie : public Password{
 	public:
 		string name,genre;
-		int code,price;
+		int code;
+		double price;
 		void displayMenu();
 		void displayuser_menu();
 		void addmovie();
@@ -39,11 +40,11 @@ class Movie : public Password{
 class Oldrecord : public Movie
 {
 	public:
-		char person_name[50];
+		string person_name;
 		long long int mobile_number;
 		int seat_reserved;
 		int total_ticketprice;
-		char movie_name[50];
+		string movie_name;
 		int price_per;
 }test;
 std::string intTostring(int num)
@@ -52,19 +53,29 @@ std::string intTostring(int num)
 	ss<<num;
 	return ss.str();
 }
-int code_exists( int code)
+int code_exists( int key)
 {
 	int code_found = 0;
 	ifstream fp;
 	fp.open("Try.txt",ios::in);
-	Movie tempmovie;
 	fp.seekg(0, ios::beg);
-	while (fp>>tempmovie.name>>tempmovie.genre>>tempmovie.code>>tempmovie.price)
+	string line;
+	while (getline(fp,line))
 	{
-		if (tempmovie.code == code)
+		string name,genre;
+		int code;
+		double price;
+		istringstream iss(line);
+		if (getline(iss,name,','))
 		{
-			code_found = 1;
-			break;
+			if (iss>>genre>>code>>price)
+			{
+				if (code == key)
+				{
+					code_found = 1;
+					break;
+				}
+			}
 		}
 	}
 	fp.close();
@@ -115,9 +126,10 @@ void Movie::displayMenu()
 				exit(0);
 				break;
 			default:
-				cout<<endl<<"\t\t\t\tInvalid selection";
-				cout<<endl<<endl<<"\t\t\tDo you want to try again?";
-				cout<<endl<<"\t\t\tPress 'Y' to continue or 'N' to exit : ";
+				cout<<endl<<"\t\t\t Invalid selection";
+				cout<<endl<<endl<<"\t\t\t Do you want to try again?";
+				fflush(stdin);
+				cout<<endl<<endl<<"\t\t\t Press 'Y' to continue or 'N' to exit : ";
 				cin>>ch;
 				ch=tolower(ch);
 				if(ch=='y')
@@ -138,36 +150,36 @@ void Movie::addmovie()
 	fs.open("Try.txt",ios::app);
 	if (!fs)
 	{
-		cout<<"\nError! File not found";
+		cout<<endl<<"\t\t\t Error! File not found";
 		exit(0);
 	}
 	cin.ignore();
-	cout<<endl<<"\t\t\tEnter movie name: ";
+	cout<<endl<<"\t\t\t Enter movie name: ";
 	getline(cin,name);
 	fflush(stdin);
-	cout<<endl<<"\t\t\tEnter movie genre: ";
+	cout<<endl<<"\t\t\t Enter movie genre: ";
 	getline(cin,genre);
 re_code:
-	cout<<endl<<"\t\t\tEnter movie code: ";
+	cout<<endl<<"\t\t\t Enter movie code: ";
 	cin>>code;
 	if (code_exists(code))
 	{
-		cout<<endl<<"\t\t\tThe movie with code"<<" "<<code<<" "<<"already exists. Try another code."<<endl;
+		cout<<endl<<"\t\t\t The movie with code"<<" "<<code<<" "<<"already exists. Try another code."<<endl;
 		goto re_code;
 	}
-	cout<<endl<<"\t\t\tEnter movie ticket price: ";
+	cout<<endl<<"\t\t\t Enter movie ticket price: ";
 	cin>>price;
 	cout<<endl;
-	fs<< name <<" "<< genre <<" " << code <<" "<< price <<endl;
+	fs<< name <<','<<" "<< genre <<" " << code <<" "<< price <<endl;
 	if(fs.fail())
 	{
-		cout<<endl<<"\t\t\tError writing to the file";
+		cout<<endl<<"\t\t\t Error writing to the file";
 		exit(1);
 	}
 	fs.close();
-	cout<<"\t\t\tMovie added successfully.";
+	cout<<"\t\t\t Movie added successfully.";
 	cout<<endl<<endl;
-	cout<<"\t\t\tDo you want to add another movie?[Y/N] : ";
+	cout<<"\t\t\t Do you want to add another movie?[Y/N] : ";
 	cin>>re_add;
 	re_add=tolower(re_add);
 	if (re_add=='y')
@@ -211,9 +223,9 @@ void Movie::displayuser_menu()
 		case 'E':
 			exit(0);
 		default:
-			printf("\n\t\t\tWrong choice.");
-			cout<<endl<<endl<<"\t\t\tDo you want to try again?";
-			cout<<endl<<"\t\t\tPress 'Y' to continue or 'N' to exit : ";
+			printf("\n\t\t\t Wrong choice.");
+			cout<<endl<<endl<<"\t\t\t Do you want to try again?";
+			cout<<endl<<endl<<"\t\t\t Press 'Y' to continue or 'N' to exit : ";
 			cin>>c;
 			c=tolower(c);
 			if(c=='y')
@@ -232,26 +244,34 @@ void Movie :: showmovielist()
 	my_file.open("Try.txt", ios::in);
 	if (!my_file)
 	{
-		cout<<endl<<"\t\t\tError! File not found";
+		cout<<endl<<"\t\t\t Error! File not found";
 		exit(0);
 	}
 	system("cls");
 	cout<<endl;
 	cout<<"\t\t__________________________________List of ongoing movies details__________________________________";
-	cout<<endl<<endl;
+	cout<<endl<<endl<<endl;
 	cout<<"\t\t"<<setw(55)<<left<<"Movie Name"<<setw(15)<<"Movie Genre"<<setw(15)<<"Movie Code"<<setw(15)<<"Ticket Price"<<endl<<endl;
 	cout<<"\t\t_________________________________________________________________________________________________";
 	printf("\n");
-	while (my_file>>name>>genre>>code>>price)
+	string line;
+	while (getline(my_file,line))
 	{
-		cout<<"\t\t"<<setw(55)<<name<<setw(15)<<genre<<setw(15)<<code<<setw(15)<<price;
-		cout<<endl;
-		cout<<"\t\t_________________________________________________________________________________________________";
-		cout<<endl;
+		istringstream iss(line);
+		if (getline(iss,name,','))
+		{
+			if (iss>>genre>>code>>price)
+			{
+				cout<<"\t\t"<<setw(55)<<name<<setw(15)<<genre<<setw(15)<<code<<setw(15)<<price;
+				cout<<endl;
+				cout<<"\t\t_________________________________________________________________________________________________";
+				cout<<endl;
+			}
+		}
 	}
 	my_file.close();
 	fflush(stdin);
-	cout<<endl<<endl<<"\t\t\t Press any key to continue.";
+	cout<<endl<<endl<<"\t\t\t Press enter to continue.....";
 	getchar();
 	system("cls");
 	displayMenu();
@@ -268,20 +288,28 @@ void Movie :: view()
 	system("cls");
 	cout<<endl;
 	cout<<"\t\t__________________________________List of ongoing movies details__________________________________";
-	cout<<endl<<endl;
+	cout<<endl<<endl<<endl;
 	cout<<"\t\t"<<setw(55)<<left<<"Movie Name"<<setw(15)<<"Movie Genre"<<setw(15)<<"Movie Code"<<setw(15)<<"Ticket Price"<<endl<<endl;
 	cout<<"\t\t_________________________________________________________________________________________________";
 	printf("\n");
-	while (my_file>>name>>genre>>code>>price)
+	string line;
+	while (getline(my_file,line))
 	{
-		cout<<"\t\t"<<setw(55)<<name<<setw(15)<<genre<<setw(15)<<code<<setw(15)<<price;
-		cout<<endl;
-		cout<<"\t\t_________________________________________________________________________________________________";
-		cout<<endl;
+		istringstream iss(line);
+		if (getline(iss,name,','))
+		{
+			if (iss>>genre>>code>>price)
+			{
+				cout<<"\t\t"<<setw(55)<<name<<setw(15)<<genre<<setw(15)<<code<<setw(15)<<price;
+				cout<<endl;
+				cout<<"\t\t_________________________________________________________________________________________________";
+				cout<<endl;
+			}
+		}
 	}
 	my_file.close();
 	fflush(stdin);
-	cout<<endl<<endl<<"\t\t\t Press any key to continue.";
+	cout<<endl<<endl<<"\t\t\t Press enter to continue.....";
 	getchar();
 	system("cls");
 	displayuser_menu();
@@ -297,32 +325,40 @@ void Movie :: deletemovie()
 	my_file.open("Try.txt", ios::in);
 	if (!my_file)
 	{
-		cout<<endl<<"\t\t\tError! File not found";
+		cout<<endl<<"\t\t\t Error! File not found";
 		exit(0);
 	}
 	system("cls");
 	cout<<endl;
 	cout<<"\t\t__________________________________List of ongoing movies details__________________________________";
-	cout<<endl<<endl;
+	cout<<endl<<endl<<endl;
 	cout<<"\t\t"<<setw(55)<<left<<"Movie Name"<<setw(15)<<"Movie Genre"<<setw(15)<<"Movie Code"<<setw(15)<<"Ticket Price"<<endl<<endl;
 	cout<<"\t\t_________________________________________________________________________________________________";
 	printf("\n");
-	while (my_file>>name>>genre>>code>>price)
+	string line;
+	while (getline(my_file,line))
 	{
-		cout<<"\t\t"<<setw(55)<<name<<setw(15)<<genre<<setw(15)<<code<<setw(15)<<price;
-		cout<<endl;
-		cout<<"\t\t_________________________________________________________________________________________________";
-		cout<<endl;
+		istringstream iss(line);
+		if (getline(iss,name,','))
+		{
+			if (iss>>genre>>code>>price)
+			{
+				cout<<"\t\t"<<setw(55)<<name<<setw(15)<<genre<<setw(15)<<code<<setw(15)<<price;
+				cout<<endl;
+				cout<<"\t\t_________________________________________________________________________________________________";
+				cout<<endl;
+			}
+		}
 	}
 	my_file.close();
 del_movie:
 	cout<<endl;
-	cout<<endl<<"\t\t\tEnter the code of movie you want to delete : ";
+	cout<<endl<<"\t\t\t Enter the code of movie you want to delete : ";
 	cin>>search;
 	fp.open("Try.txt", ios::in);
 	if (!fp)
 	{
-		cout<<endl<<"\t\t\tFile not found.";
+		cout<<endl<<"\t\t\t File not found.";
 		exit(0);
 	}
 	fs.open("Temp.txt", ios::out);
@@ -331,15 +367,22 @@ del_movie:
 		cout<<endl<<"\t\t\tFile not found.";
 		exit(0);
 	}
-	while (fp>>name>>genre>>code>>price)
+	while (getline(fp,line))
 	{
-		if (code != search)
+		istringstream iss(line);
+		if (getline(iss,name,','))
 		{
-			fs<< name <<" "<< genre << " " << code <<" "<< price <<endl;
-		}
-		else
-		{
-			found = 1;
+			if (iss>>genre>>code>>price)
+			{
+				if (code != search)
+				{
+					fs<< name <<','<<" "<< genre << " " << code <<" "<< price <<endl;
+				}
+				else
+				{
+					found = 1;
+				}
+			}
 		}
 	}
 	fp.close();
@@ -348,15 +391,15 @@ del_movie:
 	rename("temp.txt", "Try.txt");
 	if (found == 1)
 	{
-		cout<<endl<<"\t\t\tMovie with code"<<" "<<search<<" is deleted successfully.";
+		cout<<endl<<"\t\t\t Movie with code"<<" "<<search<<" is deleted successfully.";
 	}
 	else
 	{
-		cout<<endl<<"\t\t\tMovie with code"<<" "<<search<<" not found.";
+		cout<<endl<<"\t\t\t Movie with code"<<" "<<search<<" not found.";
 	}
 	found=0;
 	cout<<endl;
-	cout<<endl<<"\t\t\tDo you want to delete another movie?[Y/N] : ";
+	cout<<endl<<"\t\t\t Do you want to delete another movie?[Y/N] : ";
 	cin>>re_add;
 	re_add=tolower(re_add);
 	if (re_add=='y')
@@ -386,12 +429,20 @@ void Movie :: book()
 	cout<<"\t\t"<<setw(55)<<left<<"Movie Name"<<setw(15)<<"Movie Genre"<<setw(15)<<"Movie Code"<<setw(15)<<"Ticket Price"<<endl<<endl;
 	cout<<"\t\t_________________________________________________________________________________________________";
 	printf("\n");
-	while (fs>>name>>genre>>code>>price)
+	string line;
+	while (getline(fs,line))
 	{
-		cout<<"\t\t"<<setw(55)<<name<<setw(15)<<genre<<setw(15)<<code<<setw(15)<<price;
-		cout<<endl;
-		cout<<"\t\t_________________________________________________________________________________________________";
-		cout<<endl;
+		istringstream iss(line);
+		if (getline(iss,name,','))
+		{
+			if (iss>>genre>>code>>price)
+			{
+				cout<<"\t\t"<<setw(55)<<name<<setw(15)<<genre<<setw(15)<<code<<setw(15)<<price;
+				cout<<endl;
+				cout<<"\t\t_________________________________________________________________________________________________";
+				cout<<endl;
+			}
+		}
 	}
 	fs.close();
 	cout<<endl<<endl<<"\t\t\t Enter movie code you want to book ticket for :";
@@ -406,58 +457,66 @@ void Movie :: book()
 	{	
 		Oldrecord test; //instance of oldrecord
 		bool movie_found=false;
-		while (fp>>name>>genre>>code>>price)
+		while (getline(fp,line))
 		{
-			if(code==movie_code)
-			{	
-				movie_found=true;
-				cout<<endl<<"\t\t\tRecord Found";
-				cout<<endl;
-				cout<<endl<<"\t\t\tCode :"<<code;
-				cout<<endl<<"\t\t\tMovie name :"<<name;
-				cout<<endl<<"\t\t\tMovie genre :"<<genre;
-				cout<<endl<<"\t\t\tPrice of ticket :"<<price;
-				cout<<endl;
-				cout<<endl<<endl<<"\t\t\t\t* _________________Fill Your Details_______________  *";
-				cout<<endl;
-				fflush(stdin);
-				cout<<endl<<"\t\t\t Name :";
-				cin>>test.person_name;
-				fflush(stdin);
-			again:
-				cout<<endl<<"\t\t\t Mobile number :";
-				cin>>test.mobile_number;
-				string mobile_str=intTostring(test.mobile_number);
-				length=mobile_str.length();
-				if(length>10||length<10)
+			istringstream iss(line);
+			if (getline(iss,name,','))
+			{
+				if (iss>>genre>>code>>price)
 				{
-					cout<<endl<<"\t\t\t  Invalid number. Please enter the correct number.";
-					cout<<endl;
-					goto again;
+					if(code==movie_code)
+					{	
+						movie_found=true;
+						cout<<endl<<"\t\t\tRecord Found";
+						cout<<endl;
+						cout<<endl<<"\t\t\tCode :"<<code;
+						cout<<endl<<"\t\t\tMovie name :"<<name;
+						cout<<endl<<"\t\t\tMovie genre :"<<genre;
+						cout<<endl<<"\t\t\tPrice of ticket :"<<price;
+						cout<<endl;
+						cout<<endl<<endl<<"\t\t\t\t* _________________Fill Your Details_______________  *";
+						cout<<endl;
+						fflush(stdin);
+						cout<<endl<<"\t\t\t Name :";
+						getline(cin,test.person_name);
+						fflush(stdin);
+					again:
+						cout<<endl<<"\t\t\t Mobile number :";
+						cin>>test.mobile_number;
+						string mobile_str=intTostring(test.mobile_number);
+						length=mobile_str.length();
+						if(length>10||length<10)
+						{
+							cout<<endl<<"\t\t\t  Invalid number. Please enter the correct number.";
+							cout<<endl;
+							goto again;
+						}
+					ticketrewind:
+						cout<<endl<<"\t\t\t Total number of tickets :";
+						cin>>test.seat_reserved;
+						if(test.seat_reserved>10)
+						{
+							cout<<endl<<"\t\t\t Sorry! You can't reserve above 10 tickets at once. Try again.";
+							cout<<endl;
+							goto ticketrewind;
+						}
+						test.total_ticketprice = price * test.seat_reserved;
+						cout<<endl<<"\t\t\t Your total expense for "<<test.seat_reserved<<" ticket is "<<test.total_ticketprice;
+						test.movie_name=name; //converting string to const char*
+						test.price_per=price;
+						ufp.open("oldTransaction.txt",ios::app);
+						if(!ufp)
+						{
+							cout<<endl<<"\t\t\tFile not found.";
+						}
+						ufp<<test.person_name<<','<<" "<<test.movie_name<<','<<" "<<test.mobile_number<<" "<<test.price_per<<" "<<test.seat_reserved<<" "<<test.total_ticketprice<<endl;
+						ufp.close();
+						cout<<endl<<endl;
+						cout<<endl<<"\t\t\t ***YOUR SEATS ARE RESERVED! ENJOY YOUR MOVIE!!*** ";
+						cout<<endl<<"\t\t\t\tRecord inserted sucessfully.";
+						cout<<endl;
+					}
 				}
-			ticketrewind:
-				cout<<endl<<"\t\t\t Total number of tickets :";
-				cin>>test.seat_reserved;
-				if(test.seat_reserved>10)
-				{
-					cout<<endl<<"\t\t\tSorry! You can't reserve above 10 tickets at once. Try again.";
-					goto ticketrewind;
-				}
-				test.total_ticketprice = price * test.seat_reserved;
-				cout<<endl<<"\t\t\tYour total expense for "<<test.seat_reserved<<" ticket is "<<test.total_ticketprice;
-				strcpy(test.movie_name,name.c_str()); //converting string to const char*
-				test.price_per=price;
-				ufp.open("oldTransaction.txt",ios::app);
-				if(!ufp)
-				{
-					cout<<endl<<"\t\t\tFile not found.";
-				}
-				ufp<<test.person_name<<" "<<test.mobile_number<<" "<<test.movie_name<<" "<<test.price_per<<" "<<test.seat_reserved<<" "<<test.total_ticketprice<<endl;
-				ufp.close();
-				cout<<endl<<endl;
-				cout<<endl<<"\t\t\t ***YOUR SEATS ARE RESERVED! ENJOY YOUR MOVIE!!*** ";
-				cout<<endl<<"\t\t\t\tRecord inserted sucessfully.";
-				cout<<endl;
 			}
 		}
 		if(!movie_found)
@@ -465,7 +524,7 @@ void Movie :: book()
 			cout<<endl<<"\t\t\t Movie with code "<<movie_code<<" not found.";
 			fflush(stdin);
 			cout<<endl;
-			cout<<endl<<"\t\t\t Press any key to continue.";
+			cout<<endl<<"\t\t\t Press enter to continue.....";
 			getchar();
 			getchar();
 			displayuser_menu();
@@ -473,7 +532,7 @@ void Movie :: book()
 	}
 	fp.close();
 	fflush(stdin);
-	cout<<endl<<"\t\t\t Press any key to continue.";
+	cout<<endl<<"\t\t\t Press any key to continue.....";
 	getchar();
 	displayuser_menu();
 }
@@ -500,15 +559,26 @@ void Movie :: cancel()
 	cout<<endl<<endl<<endl<<"\t\t\tEnter your phone number: ";
 	cin>>cancel_code;
 	Oldrecord test;
-	while (fp>>test.person_name>>test.mobile_number>>test.movie_name>>test.price_per>>test.seat_reserved>>test.total_ticketprice)
+	string line;
+	while (getline(fp,line))
 	{
-		if (test.mobile_number != cancel_code)
+		istringstream iss(line);
+		if (getline(iss,test.person_name,','))
 		{
-			fs<<test.person_name<<" "<<test.mobile_number<<" "<<test.movie_name<<" "<<test.price_per<<" "<<test.seat_reserved<<" "<<test.total_ticketprice<<endl;
-		}
-		else
-		{
-			found = 1;
+			if(getline(iss,test.movie_name,','))
+			{
+				if (iss>>test.mobile_number>>test.price_per>>test.seat_reserved>>test.total_ticketprice)
+				{
+					if (test.mobile_number != cancel_code)
+					{
+						fs<<test.person_name<<','<<" "<<test.movie_name<<','<<" "<<test.mobile_number<<" "<<test.price_per<<" "<<test.seat_reserved<<" "<<test.total_ticketprice<<endl;
+					}
+					else
+					{
+						found = 1;
+					}
+				}
+			}
 		}
 	}
 	fp.close();
@@ -523,12 +593,13 @@ void Movie :: cancel()
 	{
 		cout<<endl<<"\t\t\t Movie reservation not found.";
 		fflush(stdin);
+		cout<<endl<<endl<<"\t\t\t Press enter to continue.....";
 		getchar();
 		displayuser_menu();
 	}
 	found=0;
 	fflush(stdin);
-	cout<<endl<<endl<<"\t\t\t Press any key to continue.";
+	cout<<endl<<endl<<"\t\t\t Press enter to continue.....";
 	getchar();
 	system("cls");
 	displayuser_menu();
@@ -544,23 +615,33 @@ void Movie :: reserved()
 	}
 	system("cls");
 	cout<<endl;
-	cout<<endl<<"\t\t\t\t___________________________List of reserved movies details___________________________";
+	cout<<endl<<"\t\t\t\t_________________________________List of reserved movies details_________________________________";
 	cout<<endl<<endl<<endl;
-	cout<<"\t\t"<<setw(25)<<left<<"Customer Name"<<setw(20)<<"Phone Number"<<setw(30)<<"Movie Name"<<setw(20)<<"Price per Ticket"<<setw(20)<<"Seats Reserved"<<setw(20)<<"Total Price"<<endl;
+	cout<<"\t"<<setw(35)<<left<<"Customer Name"<<setw(40)<<"Movie Name"<<setw(20)<<"Phone Number"<<setw(20)<<"Price per Ticket"<<setw(20)<<"Seats Reserved"<<setw(20)<<"Total Price"<<endl;
 	cout<<endl;
-	cout<<"\t\t____________________________________________________________________________________________________________________________________";
+	cout<<"\t______________________________________________________________________________________________________________________________________________________";
 	cout<<endl;
 	Oldrecord record;
-	while (fp>>record.person_name>>record.mobile_number>>record.movie_name>>record.price_per>>record.seat_reserved>>record.total_ticketprice)
+	string line;
+	while (getline(fp,line))
 	{
-		cout<<"\t\t"<<setw(25)<<record.person_name<<setw(20)<<record.mobile_number<<setw(30)<<record.movie_name<<setw(20)<<record.price_per<<setw(20)<<record.seat_reserved<<setw(20)<<record.total_ticketprice;
-		cout<<endl;
-		cout<<"\t\t____________________________________________________________________________________________________________________________________";
-		cout<<endl;
+		istringstream iss(line);
+		if (getline(iss,record.person_name,','))
+		{
+			if(getline(iss,record.movie_name,','))
+			{
+				if (iss>>record.mobile_number>>record.price_per>>record.seat_reserved>>record.total_ticketprice)
+				{
+					cout<<"\t"<<setw(35)<<left<<record.person_name<<setw(40)<<record.movie_name<<setw(20)<<record.mobile_number<<setw(20)<<record.price_per<<setw(20)<<record.seat_reserved<<setw(20)<<record.total_ticketprice;
+					cout<<endl;
+					cout<<"\t______________________________________________________________________________________________________________________________________________________";					cout<<endl;
+				}
+			}
+		}
 	}
 	fp.close();
 	fflush(stdin);
-	cout<<endl<<endl<<"\t\t\t Press any key to continue.";
+	cout<<endl<<endl<<"\t\t\t Press enter to continue.....";
 	getchar();
 	system("cls");
 	displayMenu();
@@ -593,9 +674,9 @@ void Password::login_menu()
 		case 3:
 			exit(0);
 		default:
-			cout<<"\n\t\t\t\tInvalid Input!";
-			cout<<endl<<endl<<"\t\t\tDo you want to try again?";
-			cout<<endl<<"\t\t\tPress 'Y' to continue or 'N' to exit : ";
+			cout<<"\n\t\t\t\t Invalid Input!";
+			cout<<endl<<endl<<"\t\t\t Do you want to try again?";
+			cout<<endl<<endl<<"\t\t\t Press 'Y' to continue or 'N' to exit : ";
 			cin>>ch;
 			ch=tolower(ch);
 			if(ch=='y')
@@ -618,9 +699,9 @@ void Password::login_details()
 	cout<<endl<<"\t\t************WELCOME TO LOGIN PAGE************"<<endl;
 	cout<<endl;
 	fflush(stdin);
-	cout<<endl<<"\t\t\tEnter your username: ";
+	cout<<endl<<"\t\t\t Enter your username: ";
 	getline(cin,un);
-	cout<<endl<<"\t\t\tEnter your password: ";
+	cout<<endl<<"\t\t\t Enter your password: ";
 	getline(cin,pw);
 	login_file.open("logindata.txt",ios::in);
 	if(!login_file)
@@ -639,9 +720,9 @@ void Password::login_details()
 		}
 		else
 		{
-			cout<<endl<<"\t\t\tInvalid Username or Password! ";
+			cout<<endl<<"\t\t\t Invalid Username or Password! ";
 			fflush(stdin);
-			cout<<endl<<endl<<"\t\t\tDo you want to try again (Y/N)? ";
+			cout<<endl<<endl<<"\t\t\t Do you want to try again (Y/N)? ";
 			cin>>ch;
 			ch=tolower(ch);
 			if(ch=='y')
@@ -700,7 +781,7 @@ void Password :: forgot()
 			verify.close();
 			file3.close();
 			fflush(stdin);
-			cout<<endl<<endl<<"\t\t\t Press any key to continue.";
+			cout<<endl<<endl<<"\t\t\t Press enter to continue.....";
 			getchar();
 			login_details();
 		}
@@ -708,7 +789,7 @@ void Password :: forgot()
 		{
 			cout<<endl<<"\t\t\t Invalid security key.";
 			cout<<endl<<endl<<"\t\t\t Do you want to try again?";
-			cout<<endl<<"\t\t\t Press 'Y' to continue or 'N' to exit : ";
+			cout<<endl<<endl<<"\t\t\t Press 'Y' to continue or 'N' to exit : ";
 			cin>>ch;
 			ch=tolower(ch);
 			if(ch=='y')
@@ -747,9 +828,10 @@ void Password:: main_menu()
 			case 3:
 				exit(0);
 			default:
-				cout<<endl<<"\t\t\t\tInvalid input.";
-				cout<<endl<<endl<<"\t\t\tDo you want to try again?";
-				cout<<endl<<"\t\t\tPress 'Y' to continue or 'N' to exit : ";
+				cout<<endl<<"\t\t\t\t Invalid input.";
+				cout<<endl<<endl<<"\t\t\t Do you want to try again?";
+				fflush(stdin);
+				cout<<endl<<endl<<"\t\t\t Press 'Y' to continue or 'N' to exit : ";
 				cin>>ch;
 				ch=tolower(ch);
 				if(ch=='y')
@@ -774,9 +856,9 @@ void Password::changepw()
 		char ch;
 		fstream file2,file3;
 		cin.ignore();
-		cout<<endl<<"\t\t\tEnter your username: ";
+		cout<<endl<<"\t\t\t Enter your username: ";
 		cin>>un;
-		cout<<endl<<"\t\t\tEnter your current password: ";
+		cout<<endl<<"\t\t\t Enter your current password: ";
 		cin>>pw;
 		file2.open("logindata.txt",ios::in);
 		if(!file2)
@@ -788,9 +870,6 @@ void Password::changepw()
 			if(password==pw)
 			{
 				cin.ignore();
-				cout<<endl<<"\t\t\t Enter your username: ";
-				cin>>un;
-				cin.ignore();
 				cout<<endl<<"\t\t\t Enter new password: ";
 				cin>>newpw;
 				file3.open("logindata.txt",ios::out);
@@ -799,17 +878,18 @@ void Password::changepw()
 					cout<<endl<<"\t\t\tNo such file.";
 				}
 				file3<<un<<" "<<newpw;
-				cout<<endl<<"\t\t\tPassword changed successfully."<<endl;
+				cout<<endl<<"\t\t\t Password changed successfully."<<endl;
 				fflush(stdin);
-				cout<<endl<<"\t\t\t Press any key to continue.";
+				cout<<endl<<"\t\t\t Press enter to continue.";
+				getchar();
 				file3.close();
 				login_details();
 			}
 			else
 			{
-				cout<<endl<<"\t\t\tUsername or password does not match.";
-				cout<<endl<<endl<<"\t\t\tDo you want to try again?";
-				cout<<endl<<"\t\t\tPress 'Y' to continue or 'N' to exit : ";
+				cout<<endl<<"\t\t\t Username or password does not match.";
+				cout<<endl<<endl<<"\t\t\t Do you want to try again?";
+				cout<<endl<<endl<<"\t\t\tPress 'Y' to continue or 'N' to exit : ";
 				cin>>ch;
 				tolower(ch);
 				if(ch=='y')
