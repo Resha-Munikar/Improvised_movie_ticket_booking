@@ -485,9 +485,9 @@ void Movie :: book()
 						cin>>test.mobile_number;
 						string mobile_str=intTostring(test.mobile_number);
 						length=mobile_str.length();
-						if(length>10||length<10)
+						if(length!=10)
 						{
-							cout<<endl<<"\t\t\t  Invalid number. Please enter the correct number.";
+							cout<<endl<<"\t\t\t Invalid number. Please enter the correct number.";
 							cout<<endl;
 							goto again;
 						}
@@ -509,7 +509,7 @@ void Movie :: book()
 						{
 							cout<<endl<<"\t\t\tFile not found.";
 						}
-						ufp<<test.person_name<<','<<" "<<test.movie_name<<','<<" "<<test.mobile_number<<" "<<test.price_per<<" "<<test.seat_reserved<<" "<<test.total_ticketprice<<endl;
+						ufp<<test.person_name<<','<<test.movie_name<<','<<test.mobile_number<<" "<<test.price_per<<" "<<test.seat_reserved<<" "<<test.total_ticketprice<<endl;
 						ufp.close();
 						cout<<endl<<endl;
 						cout<<endl<<"\t\t\t ***YOUR SEATS ARE RESERVED! ENJOY YOUR MOVIE!!*** ";
@@ -532,7 +532,7 @@ void Movie :: book()
 	}
 	fp.close();
 	fflush(stdin);
-	cout<<endl<<"\t\t\t Press any key to continue.....";
+	cout<<endl<<"\t\t\t Press enter to continue.....";
 	getchar();
 	displayuser_menu();
 }
@@ -571,7 +571,7 @@ void Movie :: cancel()
 				{
 					if (test.mobile_number != cancel_code)
 					{
-						fs<<test.person_name<<','<<" "<<test.movie_name<<','<<" "<<test.mobile_number<<" "<<test.price_per<<" "<<test.seat_reserved<<" "<<test.total_ticketprice<<endl;
+						fs<<test.person_name<<','<<test.movie_name<<','<<test.mobile_number<<" "<<test.price_per<<" "<<test.seat_reserved<<" "<<test.total_ticketprice<<endl;
 					}
 					else
 					{
