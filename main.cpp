@@ -105,22 +105,22 @@ void Movie::displayMenu()
 		switch(option)
 		{
 			case 1:
-				addmovie();
+				Movie1.addmovie();
 				break;
 			case 2:
-				showmovielist();
+				Movie1.showmovielist();
 				break;
 			case 3:
-				deletemovie();
+				Movie1.deletemovie();
 				break;
 			case 4:
-				reserved();
+				Movie1.reserved();
 				break;
 			case 5:
-				changepw();
+				Movie1.changepw();
 				break;
 			case 6:
-				main_menu();
+				obj.main_menu();
 				break;
 			case 7:
 				exit(0);
@@ -208,13 +208,13 @@ void Movie::displayuser_menu()
 		switch (ch)
 		{
 		case 'A':
-			view();
+			Movie1.view();
 			break;
 		case 'B':
-			book();
+			Movie1.book();
 			break;
 		case 'C':
-			cancel();
+			Movie1.cancel();
 			break;
 		case'D':
 			system("cls");
@@ -666,10 +666,10 @@ void Password::login_menu()
 	switch(choice)
 	{
 		case 1:
-			login_details();
+			obj.login_details();
 			break;
 		case 2:
-			forgot();
+			obj.forgot();
 			break;
 		case 3:
 			exit(0);
